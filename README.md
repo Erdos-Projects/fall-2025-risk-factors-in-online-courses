@@ -6,4 +6,4 @@ This branch is home to the primary interface of our project. The files are organ
   - `feature_calculator.py` - python script, called in `main_pipeline.ipynb`, used to select and calculate desired engineered features for EDA and modeling purposes
   - `feature_engineering_EDA.py` - **
   - `modeler.py` - python script with all the modeling code, with options to fit specific models and choose certain values of hyperparameters. returns/prints model fit results, diagnostics **
-- `data_merging.png` - image of a flow chart detailing how the OULAD data was merged together into one file
+- `data_merging.png` - image of a flow chart detailing how the OULAD data was merged together into one dataframe 
