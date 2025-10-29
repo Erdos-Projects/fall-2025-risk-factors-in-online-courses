@@ -168,7 +168,7 @@ def merge_data(filepath, write_to=None):
         "code_presentation": "category"
     })
 
-    pd.to_numeric(df_studentInfo.data_registration, errors='coerce')
+    pd.to_numeric(df_studentInfo.date_registration, errors='coerce')
     df_studentInfo = df_studentInfo.astype({
         "id_student": "int32",
         "module_presentation_length": "int32",
