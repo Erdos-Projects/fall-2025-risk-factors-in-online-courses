@@ -1,5 +1,4 @@
-import pandas as pd
-import numpy as np
+import pandas as pd, numpy as np
 import pyarrow.parquet as pq
 import pyarrow as pa
 import os
@@ -169,6 +168,7 @@ def merge_data(filepath, write_to=None):
         "code_presentation": "category"
     })
 
+    pd.to_numeric(df_studentInfo.data_registration, errors='coerce')
     df_studentInfo = df_studentInfo.astype({
         "id_student": "int32",
         "module_presentation_length": "int32",
