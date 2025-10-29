@@ -10,4 +10,4 @@ This branch is home to the primary interface of our project. The files are organ
   - `feature_engineering_EDA.py` - *****JAMES
   - `get_course_info.py` *****ARINA
   - `modeler.py` - python script with all the modeling code, with options to fit specific models and choose certain values of hyperparameters. returns/prints model fit results, diagnostics *****FENG/JAMES
-- `data_handling.png` - image of a flow chart detailing how the OULAD data was merged together into one dataframe, followed by selections of the data and feature calculation. This essentially displays the entire analytical pipeline in as brief a manner as possible
+- `data handling.png` - image of a flow chart detailing how the OULAD data was merged together into one dataframe, followed by selections of the data and feature calculation. This essentially displays the entire analytical pipeline in as brief a manner as possible
