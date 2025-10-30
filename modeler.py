@@ -11,7 +11,11 @@ from sklearn.pipeline import Pipeline
 
 from sklearn.base import clone
 from sklearn.metrics import confusion_matrix, roc_auc_score, precision_score, recall_score, f1_score, accuracy_score
-from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import StratifiedKFold, GridSearchCV
+
+import random
+import pandas as pd
+import numpy as np
 
 def data_preprocess(df):
     # Create binary target variable
@@ -45,7 +49,7 @@ def data_preprocess(df):
     df_model[columns_to_fill_zeros] = df_model[columns_to_fill_zeros].fillna(0)
     return(df_model.dropna())
 
-def model_traintest_split(df_clean):
+def model_traintest_split(df_clean, SEED=42):
     # Separate features and target
     X = df_clean.drop('target', axis = 1)
     y = df_clean['target']
@@ -55,7 +59,6 @@ def model_traintest_split(df_clean):
 
     ## Keep extra copy of column in X_train for further use in cross-validation splits
     X["stratify"] = stratify_column
-
 
     # Train/test split with stratification on target variable + module
     X_train, X_test, y_train, y_test = train_test_split(
@@ -153,8 +156,8 @@ def model_tune(df, models, SEED=42):
     }
 
     X_train, X_test, y_test = model_traintest_split(df)
-    X_train.drop(["stratify"], axis=1, inplace=True)
     y_train = X_train["stratify"].apply(lambda x: int(x[0]))
+    X_train.drop(["stratify"], axis=1, inplace=True)
 
     final_models = {}
 

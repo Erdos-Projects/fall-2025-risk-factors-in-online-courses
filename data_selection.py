@@ -61,7 +61,7 @@ def check_samplesize(df, df_subset):
         df_subset.groupby(['code_module', 'code_presentation'])['id_student']
         .nunique()
         .reset_index(name='subset_students')
-    )
+    ).round(0)
 
     # Merge and compute percentage
     excluded_summary = total_students_per_modpres.merge(
@@ -73,7 +73,7 @@ def check_samplesize(df, df_subset):
     # Fill missing counts with 0 and compute percentage
     excluded_summary['pct_retained'] = (
         excluded_summary['subset_students'] / excluded_summary['total_students'] * 100
-    )
+    ).round(1)
 
     # Show result
     pd.set_option('display.width', 2000)

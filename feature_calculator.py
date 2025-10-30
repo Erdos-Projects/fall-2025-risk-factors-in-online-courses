@@ -96,7 +96,7 @@ def assessment_features(df,assessments,features=['submission'],n_weeks=3,write_t
     df_first_assessment_full.drop(columns=['id_assessment_expected','assessment_type_expected', 'due_date', 'weight_expected'], inplace=True)
 
     # Add submission related engineered features for FIRST ASSESSMENT only:
-    if 'submission_' in features:
+    if 'submission' in features:
         df_first_assessment_full['relative_submission_date'] = df_first_assessment_full['first_due_date'] - df_first_assessment_full['date']
         df_first_assessment_full['submission_type'] = np.select(
             [
@@ -113,6 +113,10 @@ def assessment_features(df,assessments,features=['submission'],n_weeks=3,write_t
             ],
             default='Unknown'
         )
+
+    ## save as csv
+    if write_to:
+        df_first_assessment_full.to_csv(f"{write_to}assessment_features_pre_thru_week{n_weeks}.csv", index=False)        
 
     return df_first_assessment_full
 
@@ -278,20 +282,35 @@ def vle_features(df,features=['total','focus','regularity','diversity','demograp
             proportions = counts / counts.sum()
             return entropy(proportions, base=2)
         
-        def calculate_vle_metrics(df_filtered, suffix, vle_columns):
-            student_totals = df_filtered.groupby([
-                'id_student','code_module','code_presentation'
-                ])[vle_columns].sum().reset_index() # Group by student and sum VLE activities for the period
-            richness = (student_totals[vle_columns] > 0).sum(axis=1).rename(f'vle_richness_{suffix}') # Calculate richness (number of VLE types used) 
-            diversity = student_totals[['id_student'] + vle_columns].apply(
-                lambda row: shannon_entropy_calc(row, vle_columns), axis=1).rename(f'diversity_shannon_{suffix}')
-            return richness, diversity
+        student_totals = df_vle_early_full.groupby([
+            'id_student','code_module','code_presentation'
+            ])[vle_columns].sum().reset_index()
         
-        vle_richness_pre_w3, diversity_shannon_pre_w3 = calculate_vle_metrics(df_vle_early_full, 'pre_w3', vle_columns)       
+        student_totals['vle_richness_pre_w3'] = (student_totals[vle_columns]>0).sum(axis=1)  # Calculate richness (number of VLE types used)
+        student_totals['diversity_shannon_pre_w3'] = student_totals[['id_student'] + vle_columns # Calculate entropy
+                                                                    ].apply(lambda row: shannon_entropy_calc(row, vle_columns), axis=1)
+        
+        # Merge these features back into dataframe
+        df_vle_early_full = df_vle_early_full.merge(
+            student_totals[['id_student', 'code_module','code_presentation','vle_richness_pre_w3','diversity_shannon_pre_w3']],
+            on=['id_student', 'code_module','code_presentation'],
+            how='left')    
 
-        # Merge both metrics back to original dataframe
-        df_vle_early_full['vle_richness_pre_w3'] = df_vle_early_full['id_student'].map(vle_richness_pre_w3)
-        df_vle_early_full['diversity_shannon_pre_w3'] = df_vle_early_full['id_student'].map(diversity_shannon_pre_w3)
+        # # I noticed the mapping below was not actually mapping since vle_richness_pre_w3 and diversity_shannon_pre_w3 don't have id_student 
+        # def calculate_vle_metrics(df_filtered, suffix, vle_columns):
+        #     student_totals = df_filtered.groupby([
+        #         'id_student','code_module','code_presentation'
+        #         ])[vle_columns].sum().reset_index() # Group by student and sum VLE activities for the period
+        #     richness = (student_totals[vle_columns] > 0).sum(axis=1).rename(f'vle_richness_{suffix}') # Calculate richness (number of VLE types used) 
+        #     diversity = student_totals[['id_student'] + vle_columns].apply(
+        #         lambda row: shannon_entropy_calc(row, vle_columns), axis=1).rename(f'diversity_shannon_{suffix}')
+        #     return richness, diversity
+        
+        # vle_richness_pre_w3, diversity_shannon_pre_w3 = calculate_vle_metrics(df_vle_early_full, 'pre_w3', vle_columns)       
+
+        # # Merge both metrics back to original dataframe
+        # df_vle_early_full['vle_richness_pre_w3'] = df_vle_early_full['id_student'].map(vle_richness_pre_w3)
+        # df_vle_early_full['diversity_shannon_pre_w3'] = df_vle_early_full['id_student'].map(diversity_shannon_pre_w3)
 
         student_level_columns.extend(['vle_richness_pre_w3','diversity_shannon_pre_w3']) 
     
@@ -306,8 +325,8 @@ def vle_features(df,features=['total','focus','regularity','diversity','demograp
     df_vle_early_student_level = df_vle_early_full.groupby(['id_student','code_module','code_presentation'])[available_columns].first().reset_index()
     # df_vle_pre_w3_student_level = df_vle_pre_w3_student_level.drop(columns=['date', 'week'] + vle_columns)
 
-    # ## save as csv
-    # if write_to:
-    #     df_student_level.to_csv(write_to)
+    ## save as csv
+    if write_to:
+        df_vle_early_student_level.to_csv(f"{write_to}vle_features_pre_thru_week{n_weeks}.csv", index=False)
 
     return df_vle_early_student_level

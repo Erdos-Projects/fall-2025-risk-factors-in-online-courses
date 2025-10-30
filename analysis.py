@@ -1,3 +1,6 @@
+from sklearn.metrics import confusion_matrix, roc_auc_score, precision_score, recall_score, f1_score, accuracy_score
+import matplotlib.pyplot as plt
+
 def metrics_at_thresholds(thresholds, tuned_models, X, y):
     results = []
 
