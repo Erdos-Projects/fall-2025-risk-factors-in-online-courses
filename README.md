@@ -1,7 +1,21 @@
 # fall-2025-risk-factors-in-online-courses
 This branch is home to the primary interface of our project. The files are organized as follows:
-- `main_pipeline.ipynb` - main Jupyter notebook, used to interact with procedures and scripts throughout the analytic process. This file handles the loading, merging, cleaning, exploratory analysis, and modeling steps of the project. Each step can be run together, or in isolation depending on user need
-- Python scripts, most of which are called from `main_pipeline.ipynb`:
+- `main_pipeline.ipynb` - main Jupyter notebook, used to interact with procedures and scripts throughout the analytic process. This file handles the loading, merging, cleaning, exploratory analysis, and modeling steps of the project. 
+
+Outline of `main_pipeline.ipynb`:
+- Data Preprocessing (each step under data preprocessing can be run together, or in isolation using previously saved files depending on user need)
+  - Data Merging: requires `OULAD.zip`, calls `data_prep.py`
+  - EDA: Module-Presentation Comparison: requires `merged_data.csv` (created in Data Merging), calls functions in `get_course_info.py`
+  - Feature Calculation: requires `merged_data.csv` (created in Data Merging) and assessments_OULAD.csv (created in Data Merging), calls functions in `feature_calculator.py`
+  - Data Selection: requires `data_pre_thru_week*.csv` (created in Feature Calculation) and assessments_OULAD.csv (created in Data Merging), calls functions in `data_selection.py`
+- Modeling Procedures (should be run together) 
+  - Define models: requires `subset_data_pre_thru_week*.csv` (created in Data Selection)
+  - Fit and tune models: calls functions in `modeler.py`, saves `final_models.pkl` after hyperparameter tuning (since it takes a while to run, allowing for users to skip the hyperparameter tuning step and upload the results in future runs)
+  - Further analysis: calls functions in `analysis.py`
+- Test set performance: calls functions in `analysis.py` 
+     
+
+Python scripts, most of which are called from `main_pipeline.ipynb`:
   - `combine_tables.py` - contains a basic function for ease of combining dataframes necessitated by the analytical pipeline
   - `data_prep.py` - loads the original OULAD dataset (seven separate csvs contained within a zip file downloaded from https://analyse.kmi.open.ac.uk/open-dataset) and merges the data into one csv file after reformatting it from long to wide format. Functions include _unzip_data_ to unzip the original data, _data_merge_ to handle actual merging of data), and _combine_tables_ for ease of merging any additional files later in the pipeline
   - `data_selection.py` - used to refine dataframe to a specified time period, select only modules with assessments within the selected time frame, and remove students with or above max_num_attempts and those who withdrew within the specified time period
@@ -12,6 +26,6 @@ This branch is home to the primary interface of our project. The files are organ
   - `modeler.py` - Python script with all the modeling code, with options to fit specific models (returning diagnostic metrics) and do hyperparameter tuning (returning tuned models). More specific documentation at top of specific functions in script.
   - `threshold_analysis.py` - contains functions to analyze effect of varying the classification threshold on various performance metrics.
 - `data_handling.png` - image of a flow chart detailing how the OULAD data was merged together into one dataframe, followed by selections of the data and feature calculation. This essentially displays the entire analytical pipeline in as brief a manner as possible
-- `final_models.pkl` - ***ARINA***
+- `final_models.pkl` - saved output of hyperparameter tuning after calling function _model_tune_ for all candidate models 
 
 We note that there are a few sources for the original OULAD dataset (the UC Irvine ML Repository, Kaggle, and the Open University [OU] Analyse site). These are mostly similar, but have some minor differences. We emphasize that the scripts in this branch are written to work with and have been tested on the version from the OU Analyse site at https://analyse.kmi.open.ac.uk/open-dataset  
