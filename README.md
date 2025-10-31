@@ -5,9 +5,9 @@ This branch is home to the primary interface of our project. The files are organ
   - `combine_tables.py` - contains a basic function for ease of combining dataframes necessitated by the analytical pipeline
   - `data_prep.py` - loads the original OULAD dataset (seven separate csvs contained within a zip file downloaded from https://analyse.kmi.open.ac.uk/open-dataset) and merges the data into one csv file after reformatting it from long to wide format. Functions include _unzip_data_ to unzip the original data, _data_merge_ to handle actual merging of data), and _combine_tables_ for ease of merging any additional files later in the pipeline
   - `data_selection.py` - used to refine dataframe to a specified time period, select only modules with assessments within the selected time frame, and remove students with or above max_num_attempts and those who withdrew within the specified time period
-  - `false_positive_analysis.py` (and .ipynb, if we don't combine these in with other files) ***JAMES***
+  - `false_positive_analysis.py` (and .ipynb, if we don't combine these in with other files) - analyzes the profile of false positives (students who were incorrectly flagged as failing), focusing on how many false positive students have genuine risk factors and the effect of different thresholds on the # and % of false positives in the overall dataset. 
   - `feature_calculator.py` - used to select and calculate desired engineered features for EDA and modeling purposes
-  - `feature_engineering_EDA.py` - ***JAMES***
+  - `feature_engineering_EDA.py` - creates engineered features and performs exploratory data analysis on the relationship between these engineered features in the first week of a course and a student's final grade (final_result)
   - `get_course_info.py` - contains code to extract data about courses for EDA purposes.
   - `modeler.py` - Python script with all the modeling code, with options to fit specific models (returning diagnostic metrics) and do hyperparameter tuning (returning tuned models). More specific documentation at top of specific functions in script.
   - `threshold_analysis.py` - contains functions to analyze effect of varying the classification threshold on various performance metrics.
