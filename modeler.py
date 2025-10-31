@@ -18,6 +18,10 @@ import pandas as pd
 import numpy as np
 
 def data_preprocess(df):
+    # helper function, prepares dataframe to be fit through pipeline.
+    # takes as input: dataframe df
+    # returns as output: prepared dataframe
+
     # Create binary target variable
     # 1 = Fail/Withdrawn 
     # 0 = Pass/Distinction 
@@ -50,6 +54,12 @@ def data_preprocess(df):
     return(df_model.dropna())
 
 def model_traintest_split(df_clean, SEED=42):
+    # helper function, prepares train / test split for dataframe
+    # stratifies (at least initially) on both outcome and module-presentation
+    # takes as input: dataframe df_clean, and (optionally) a random seed
+    # returns as output: train / test sets 
+    # note y_train is not returned; it is encoded as part of X_train.stratify
+
     # Separate features and target
     X = df_clean.drop('target', axis = 1)
     y = df_clean['target']
@@ -74,8 +84,15 @@ def model_traintest_split(df_clean, SEED=42):
     return X_train, X_test, y_test
 
 def model_initfit(df, models, SEED=42):
-    # df for the data to which the model is to be fit
+    # uses cross-validation to report metrics for models fitted on df
+
+    # takes as input:
+    # df: the data to which the model is to be fit
+    # models: dictionary of pipelines to fit
     # SEED: random seed [for reproducibility]
+
+    # returns as output: dictionary of metrics 
+    # (specific metrics described below)
 
     random.seed(SEED)
     np.random.seed(SEED)
@@ -134,6 +151,16 @@ def model_initfit(df, models, SEED=42):
     return(results_df)
 
 def model_tune(df, models, SEED=42):
+    # uses GridSearchCV to do hyperparameter tuning for specified models
+
+    # takes as input:
+    # df: the data to which the model is to be fit
+    # models: dictionary of pipelines to fit
+    # SEED: random seed [for reproducibility]
+
+    # returns as output: tuned models
+
+
     models_to_tune = ['Logistic Regression', 'Random Forest', 'Extra Trees']
     # Hyperparameter grids
     param_grids = {
