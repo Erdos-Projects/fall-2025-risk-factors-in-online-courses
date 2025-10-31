@@ -5,7 +5,7 @@ This branch is home to the primary interface of our project. The files are organ
 Outline of `main_pipeline.ipynb`: 
 
 **Data Preprocessing** (each step under data preprocessing can be run together, or in isolation using previously saved files depending on user need)
-  - **Data Merging**: requires `OULAD.zip`, calls `data_prep.py`
+  - **Data Merging**: requires `OULAD.zip`, calls functions in `data_prep.py`
   - **EDA: Module-Presentation Comparison**: requires `merged_data.csv` (created in Data Merging), calls functions in `get_course_info.py`
   - **Feature Calculation**: requires `merged_data.csv` (created in Data Merging) and assessments_OULAD.csv (created in Data Merging), calls functions in `feature_calculator.py`
   - **Data Selection**: requires `data_pre_thru_week*.csv` (created in Feature Calculation) and assessments_OULAD.csv (created in Data Merging), calls functions in `data_selection.py`
