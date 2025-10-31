@@ -2,7 +2,8 @@
 This branch is home to the primary interface of our project. The files are organized as follows:
 - `main_pipeline.ipynb` - main Jupyter notebook, used to interact with procedures and scripts throughout the analytic process. This file handles the loading, merging, cleaning, exploratory analysis, and modeling steps of the project. 
 
-Outline of `main_pipeline.ipynb`:
+Outline of `main_pipeline.ipynb`: 
+
 **Data Preprocessing** (each step under data preprocessing can be run together, or in isolation using previously saved files depending on user need)
   - **Data Merging**: requires `OULAD.zip`, calls `data_prep.py`
   - **EDA: Module-Presentation Comparison**: requires `merged_data.csv` (created in Data Merging), calls functions in `get_course_info.py`
