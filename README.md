@@ -9,10 +9,12 @@ Outline of `main_pipeline.ipynb`:
   - **EDA: Module-Presentation Comparison**: requires `merged_data.csv` (created in Data Merging), calls functions in `get_course_info.py`
   - **Feature Calculation**: requires `merged_data.csv` (created in Data Merging) and assessments_OULAD.csv (created in Data Merging), calls functions in `feature_calculator.py`
   - **Data Selection**: requires `data_pre_thru_week*.csv` (created in Feature Calculation) and assessments_OULAD.csv (created in Data Merging), calls functions in `data_selection.py`
+
 **Modeling Procedures** (should be run together) 
   - **Define models**: requires `subset_data_pre_thru_week*.csv` (created in Data Selection)
   - **Fit and tune models**: calls functions in `modeler.py`, saves `final_models.pkl` after hyperparameter tuning (since it takes a while to run, allowing for users to skip the hyperparameter tuning step and upload the results in future runs)
   - **Further analysis**: calls functions in `analysis.py`
+
 **Test set performance**: calls functions in `analysis.py` 
      
 
