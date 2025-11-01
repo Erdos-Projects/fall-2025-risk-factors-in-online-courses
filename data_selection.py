@@ -1,4 +1,10 @@
 def student_selection(df,n_weeks,max_num_attempts): 
+    # inputs: 
+    # df = dataframe 
+    # n_weeks = number of weeks for timeframe used in model, includes pre-course period 
+    # max_num_attempts = max number of times a student has attempted the course
+    # output: 
+    # returns dataframe 
 
     # Dropping rows in which a student already took the course more than the defined max_num_attempts
     df = df[df['num_of_prev_attempts'] <= max_num_attempts]
@@ -10,6 +16,12 @@ def student_selection(df,n_weeks,max_num_attempts):
 
 
 def course_selection(df, assessments, n_weeks): 
+    # inputs: 
+    # df = dataframe
+    # assessments = assessments dataframe from original OULAD data
+    # n_weeks = number of weeks for timeframe used in model, includes pre-course period 
+    # output: 
+    # returns dataframe 
 
     # Rename 'date' column in assessments to 'due_date'
     assessments = assessments.rename(columns={'date': 'due_date'})
@@ -46,6 +58,14 @@ def course_selection(df, assessments, n_weeks):
     return df 
 
 def check_samplesize(df, df_subset):
+    # compares sample sizes of students from dataframe before and after subsetting
+
+    # inputs: 
+    # df = full dataframe 
+    # df_subset = subsetted dataframe 
+    # output: 
+    # table with calculated sample size comparisons 
+
     import pandas as pd
 
     # Check how many students were excluded 

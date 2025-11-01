@@ -34,7 +34,7 @@ def data_preprocess(df):
         'code_module', 
         'content_focus_pre_w3',
         'collaborative_focus_pre_w3', 
-        'active_days_per_week_pre_w3',
+        'std_weekly_consistency_pre_w3',
         'std_regularity_pre_w3', 
         'vle_richness_pre_w3',
         'diversity_shannon_pre_w3', 
@@ -47,7 +47,7 @@ def data_preprocess(df):
 
     # Assign zeros to all interaction features that are null *except* submission_type
     columns_to_fill_zeros = [
-        'active_days_per_week_pre_w3',
+        'std_weekly_consistency_pre_w3',
         'std_regularity_pre_w3',
     ]
     df_model[columns_to_fill_zeros] = df_model[columns_to_fill_zeros].fillna(0)

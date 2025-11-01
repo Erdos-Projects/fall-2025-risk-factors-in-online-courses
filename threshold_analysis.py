@@ -58,4 +58,5 @@ def visualize_thresholds(df_results):
     axes[5].axis('off')
 
     plt.tight_layout()
+    plt.savefig("results/modeling_visualizethresholds.png")
     plt.show()

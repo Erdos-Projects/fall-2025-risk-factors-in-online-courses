@@ -1,4 +1,5 @@
 def combine_tables(df1, df2):
+    # merges two dataframes together based on common columns 
     
     import pandas as pd
 

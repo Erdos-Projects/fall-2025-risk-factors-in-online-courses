@@ -71,7 +71,7 @@ feature_columns = [
     'code_module', 
     'content_focus_pre_w3',
     'collaborative_focus_pre_w3', 
-    'active_days_per_week_pre_w3',
+    'std_weekly_consistency_pre_w3',
     'std_regularity_pre_w3', 
     'vle_richness_pre_w3',
     'diversity_shannon_pre_w3', 
@@ -84,7 +84,7 @@ df_model = df[feature_columns + ['target']].copy()
 
 # Assign zeros to all interaction features that are null *except* submission_type
 columns_to_fill_zeros = [
-    'active_days_per_week_pre_w3',
+    'std_weekly_consistency_pre_w3',
     'std_regularity_pre_w3',
 ]
 df_model[columns_to_fill_zeros] = df_model[columns_to_fill_zeros].fillna(0)
@@ -147,7 +147,7 @@ from sklearn.pipeline import Pipeline
 
 # %%
 # Define preprocessors
-scale_cols = ['content_focus_pre_w3', 'collaborative_focus_pre_w3', 'active_days_per_week_pre_w3',
+scale_cols = ['content_focus_pre_w3', 'collaborative_focus_pre_w3', 'std_weekly_consistency_pre_w3',
               'std_regularity_pre_w3', 'vle_richness_pre_w3', 'diversity_shannon_pre_w3', 
               'total_vle_pre_w3']
 cat_cols = ['code_module', 'submission_type']
@@ -378,7 +378,7 @@ for model_name, model in [('Logistic Regression', tuned_lr_model), ('Random Fore
 # Compare false vs true positives for both models
 y_train_numeric = y_train.apply(lambda x: int(x[0]))
 feature_cols = ['total_vle_pre_w3', 'content_focus_pre_w3', 'collaborative_focus_pre_w3',
-                'active_days_per_week_pre_w3', 'std_regularity_pre_w3', 
+                'std_weekly_consistency_pre_w3', 'std_regularity_pre_w3', 
                 'vle_richness_pre_w3', 'diversity_shannon_pre_w3', 'score']
 
 for model_name, model in [('Logistic Regression', tuned_lr_model), ('Random Forest', tuned_rf_model)]:
@@ -438,7 +438,7 @@ print("=" * 80)
 
 # Numerical features (score already added in previous cell)
 numerical_cols = ['total_vle_pre_w3', 'content_focus_pre_w3', 'collaborative_focus_pre_w3',
-                  'active_days_per_week_pre_w3', 'std_regularity_pre_w3', 
+                  'std_weekly_consistency_pre_w3', 'std_regularity_pre_w3', 
                   'vle_richness_pre_w3', 'diversity_shannon_pre_w3', 'score']
 
 stats_results = []

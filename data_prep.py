@@ -7,6 +7,9 @@ import glob
 import zipfile
 
 def unzip_data(filepath):
+    # inputs: file path of zipped file
+    # outputs: dataframe for each csv in the zip file
+
     zipped = zipfile.ZipFile(filepath) 
 
     assessments = pd.read_csv(zipped.open('assessments.csv')) # info about the assessments
@@ -20,6 +23,12 @@ def unzip_data(filepath):
     return(assessments, courses, studentAssessments, studentInfo, studentRegistration, studentVLE, VLEdata)
 
 def merge_data(filepath, write_to=None):
+    # inputs: 
+    # filepath = file path of zipped file
+    # write_to  = file path to write csv file containing merged data, default is None (current directory)
+    # outputs: 
+    # dataframe 
+    # saved csv
 
     zipped = zipfile.ZipFile(filepath) 
 

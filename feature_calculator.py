@@ -1,9 +1,10 @@
 def assessment_features(df,assessments,features=['submission'],n_weeks=3,write_to=None):
     # parameters: 
     # df is the merged dataframe containing all necessary variables
-    # features is a list of feature types we wish to calculate. all are included by default
-    # n_weeks determines the time period to be selected from the beginning of the data set
+    # submission is what we wish to calculate. all are included by default
+    # n_weeks determines the time period to be selected from the beginning of the data set, default set to 3 weeks
     # write_to can be used to specify a file path if the user wishes to save the final dataframe in a csv
+    # returns dataframe and saves it as csv
 
     import numpy as np
 
@@ -125,9 +126,10 @@ def vle_features(df,features=['total','focus','regularity','diversity','demograp
     # parameters: 
     # df is the merged dataframe containing all necessary variables
     # features is a list of feature types we wish to calculate. all are included by default
-    # n_weeks determines the time period to be selected from the beginning of the data set
+    # n_weeks determines the time period to be selected from the beginning of the data set, default set to 3 weeks
     # write_to can be used to specify a file path if the user wishes to save the final dataframe in a csv
-    
+    # returns dataframe and saves it as csv
+
     import numpy as np
 
     features = [item.lower() for item in features] # avoid case-sensitive errors
@@ -235,13 +237,13 @@ def vle_features(df,features=['total','focus','regularity','diversity','demograp
         # - Standard deviation of gaps between days with interactions
 
         # This creates 2 columns:
-        # - active_days_per_week_pre_w3
+        # - std_weekly_consistency_pre_w3
         # - std_regularity_pre_w3
 
         def calculate_weekly_consistency(df_filtered, suffix, student_id_col='id_student', date_col='date', week_col='week'):
             weekly_days = df_filtered.groupby([student_id_col, week_col])[date_col].nunique()
             consistency = weekly_days.groupby(student_id_col).std()
-            consistency = consistency.rename(f'active_days_per_week_pre_w3_{suffix}')
+            consistency = consistency.rename(f'std_weekly_consistency_pre_w3_{suffix}')
             return consistency
 
         def calculate_regularity_std_period(df_filtered, suffix, student_id_col='id_student', date_col='date'):
@@ -257,10 +259,10 @@ def vle_features(df,features=['total','focus','regularity','diversity','demograp
         std_regularity_pre_w3 
 
         # Merge both metrics back to original dataframe
-        df_vle_early_full['active_days_per_week_pre_w3'] = df_vle_early_full['id_student'].map(active_days_pre_w3)
+        df_vle_early_full['std_weekly_consistency_pre_w3'] = df_vle_early_full['id_student'].map(active_days_pre_w3)
         df_vle_early_full['std_regularity_pre_w3'] = df_vle_early_full['id_student'].map(std_regularity_pre_w3)
 
-        student_level_columns.extend(['active_days_per_week_pre_w3','std_regularity_pre_w3'])
+        student_level_columns.extend(['std_weekly_consistency_pre_w3','std_regularity_pre_w3'])
 
     if 'diversity' in features:
 
@@ -295,22 +297,6 @@ def vle_features(df,features=['total','focus','regularity','diversity','demograp
             student_totals[['id_student', 'code_module','code_presentation','vle_richness_pre_w3','diversity_shannon_pre_w3']],
             on=['id_student', 'code_module','code_presentation'],
             how='left')    
-
-        # # I noticed the mapping below was not actually mapping since vle_richness_pre_w3 and diversity_shannon_pre_w3 don't have id_student 
-        # def calculate_vle_metrics(df_filtered, suffix, vle_columns):
-        #     student_totals = df_filtered.groupby([
-        #         'id_student','code_module','code_presentation'
-        #         ])[vle_columns].sum().reset_index() # Group by student and sum VLE activities for the period
-        #     richness = (student_totals[vle_columns] > 0).sum(axis=1).rename(f'vle_richness_{suffix}') # Calculate richness (number of VLE types used) 
-        #     diversity = student_totals[['id_student'] + vle_columns].apply(
-        #         lambda row: shannon_entropy_calc(row, vle_columns), axis=1).rename(f'diversity_shannon_{suffix}')
-        #     return richness, diversity
-        
-        # vle_richness_pre_w3, diversity_shannon_pre_w3 = calculate_vle_metrics(df_vle_early_full, 'pre_w3', vle_columns)       
-
-        # # Merge both metrics back to original dataframe
-        # df_vle_early_full['vle_richness_pre_w3'] = df_vle_early_full['id_student'].map(vle_richness_pre_w3)
-        # df_vle_early_full['diversity_shannon_pre_w3'] = df_vle_early_full['id_student'].map(diversity_shannon_pre_w3)
 
         student_level_columns.extend(['vle_richness_pre_w3','diversity_shannon_pre_w3']) 
     

@@ -381,7 +381,7 @@ def weekly_consistency(df, student_id_col='id_student', date_col='date', week_co
     consistency = weekly_days.groupby(student_id_col).std()
     
     # Add as a new column to the dataframe
-    df['active_days_per_week_overall'] = df[student_id_col].map(consistency)
+    df['std_weekly_consistency_overall'] = df[student_id_col].map(consistency)
     
     return df
 
@@ -389,8 +389,8 @@ def weekly_consistency(df, student_id_col='id_student', date_col='date', week_co
 # Higher values = more variable weekly activity
 df = weekly_consistency(df)
 
-# Extract active_days_per_week_overall to student_diversity
-weekly_consistency_per_student = df.groupby(['id_student', 'code_presentation'])['active_days_per_week_overall'].first().reset_index()
+# Extract std_weekly_consistency_overall to student_diversity
+weekly_consistency_per_student = df.groupby(['id_student', 'code_presentation'])['std_weekly_consistency_overall'].first().reset_index()
 
 student_diversity = student_diversity.merge(
     weekly_consistency_per_student,

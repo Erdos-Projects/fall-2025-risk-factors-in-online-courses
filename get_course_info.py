@@ -1,11 +1,22 @@
 def course_meta_info(df, meta=['length','num_students','num_assessments','percent_outcomes'], output=True):
+    # inputs: 
+    # df = dataframe
+    # meta = list of metadata info to calculate
+    # - length: length of module-presentation in days
+    # - num_students: number of students in each module-presentation
+    # - num_assessments: number of assessments in each module-presentation
+    # - percent_outcomes: percentage of students within each final_result in each module-presentation 
+    # output = whether to print table, default is True 
+    # outputs: 
+    # printed table if output = True
+    # returns table 
 
     df_course_meta = df[["code_module", "code_presentation"]].drop_duplicates().reset_index()
 
     if 'length' in meta:     
         course_lengths = (
             df
-            .groupby(["code_module", "code_presentation"], as_index=False)
+            .groupby(["code_module", "code_presentation"], as_index=False, observed = False)
             ["module_presentation_length"]
             .first()
         )
@@ -14,7 +25,7 @@ def course_meta_info(df, meta=['length','num_students','num_assessments','percen
     if 'num_students' in meta:
         students_in_course = (
             df
-            .groupby(["code_module", "code_presentation"], as_index=False)
+            .groupby(["code_module", "code_presentation"], as_index=False, observed = False)
             ["id_student"]
             .nunique()
             .rename(columns={"id_student": "num_students"})
@@ -24,10 +35,10 @@ def course_meta_info(df, meta=['length','num_students','num_assessments','percen
     if 'num_assessments' in meta: 
         assessments_in_course = (
             df
-            .groupby(["code_module", "code_presentation","assessment_type"], as_index=False)
-            .agg(
-                num_unique_assessments=("id_assessment", "nunique")
-            )
+            .groupby(["code_module", "code_presentation","assessment_type"], observed = False)
+            ["id_assessment"]
+            .nunique()
+            .reset_index(name="num_unique_assessments")
         )
 
         assessments_in_course_wide = (
@@ -36,8 +47,8 @@ def course_meta_info(df, meta=['length','num_students','num_assessments','percen
                 index=["code_module", "code_presentation"],
                 columns="assessment_type",
                 values="num_unique_assessments",
-                fill_value=0  # fills missing combinations with 0
-            )
+                fill_value=0,  # fills missing combinations with 0
+                observed = False)
             .reset_index()
         )
 
@@ -48,10 +59,10 @@ def course_meta_info(df, meta=['length','num_students','num_assessments','percen
     if 'percent_outcomes' in meta: 
         outcomes_in_course = (
             df
-            .groupby(["code_module", "code_presentation","final_result"], as_index=False)
-            .agg(
-                num_students=("id_student", "nunique")
-            )
+            .groupby(["code_module", "code_presentation","final_result"], observed = False)
+            ["id_student"]
+            .nunique()
+            .reset_index(name="num_students")
         )
 
         outcomes_in_course_wide = (
@@ -60,8 +71,8 @@ def course_meta_info(df, meta=['length','num_students','num_assessments','percen
                 index=["code_module", "code_presentation"],
                 columns="final_result",
                 values="num_students",
-                fill_value=0  # fills missing combinations with 0
-            )
+                fill_value=0,  # fills missing combinations with 0
+                observed = False)
             .reset_index()
         )
 
