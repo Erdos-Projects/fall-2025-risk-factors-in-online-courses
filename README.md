@@ -9,9 +9,9 @@ Acknowledgements: We are grateful for the instruction and support of the Erdös 
 
 1. [Introduction](#introduction)  
 2. [Dataset](#dataset)  
-3. [Model] (#model)
-4. [Conclusions] (#conclusions)
-5. [Description of Repository] (#description-of-repository)
+3. [Model Selection and Performance](#model-selection-and-performance)
+4. [Conclusions](#conclusions)
+5. [Description of Repository](#description-of-repository)
 
 ## Introduction
 What early engagement patterns in virtual learning environments predict negative course outcomes? It is well known that performance on assessments and in-class attendance are predictive of final course results. Yet grades often come too late in a class term for early interventions and attendance is difficult, if not impossible, to measure in online learning environments. To address this gap, we developed a model for identifying early risk factors in online courses based on student interaction patterns in a virtual learning environment (VLE). Rather than relying on grades or conventional risk features such as demographics, our model bases its predictions on various facets of student engagement in a VLE. To focus our model on early risk factors, we restricted data to the first three weeks of a course. Our primary key performance indicator was recall–that is, the % of students who failed or withdrew late from the course who were successfully identified by our model–which we maximized while keeping precision above 50% and the false negative rate (i.e., % of failing students that were incorrectly classified as not at-risk) below 20%.
@@ -28,7 +28,7 @@ After creating a new dataset out of the original OULAD, we engineered the follow
 - Whether a student’s interactions with the VLE were predominantly focused on content or collaboration
 - How diverse a student’s different types of interactions with the VLE were
 
-## Model
+## Model Selection and Performance
 
 We framed our model as a classification problem focused on predicting negative student performance (i.e., if a student either failed or withdrew from the course after the first 3 weeks). In preliminary modeling, we found that our model performed significantly better as a binary classification problem between students who passed or passed with distinction and students who failed or withdrew from the course after the first 3 weeks. To ensure consistency across different modules, which covered different subjects and had different timelines, we only used data from courses and terms that had an assessment within the first 3 weeks of the term. We did not use the score on the first assessment as part of our model. Our final dataset included 13,476 students across 11 module-presentation combinations, 42.3% of whom either failed or withdrew after the first three weeks. 
 
@@ -65,15 +65,15 @@ Outline of `main_pipeline.ipynb`:
 
 Python scripts, most of which are called from `main_pipeline.ipynb`:
   - `combine_tables.py` - contains a basic function for ease of combining dataframes necessitated by the analytical pipeline
-  - `data_prep.py` - loads the original OULAD dataset (seven separate csvs contained within a zip file downloaded from https://analyse.kmi.open.ac.uk/open-dataset) and merges the data into one csv file after reformatting it from long to wide format. Functions include _unzip_data_ to unzip the original data, _data_merge_ to handle actual merging of data), and _combine_tables_ for ease of merging any additional files later in the pipeline
+  - `data_prep.py` - loads the original OULAD dataset (seven separate csvs contained within a zip file downloaded from https://analyse.kmi.open.ac.uk/open-dataset) and merges the data into one csv file after reformatting it from long to wide format. Functions include _unzip_data_ to unzip the original data, _data_merge_ to handle actual merging of data, and _combine_tables_ for ease of merging any additional files later in the pipeline
   - `data_selection.py` - used to refine dataframe to a specified time period, select only modules with assessments within the selected time frame, and remove students with or above max_num_attempts and those who withdrew within the specified time period
-  - `false_positive_analysis.py` (and .ipynb, if we don't combine these in with other files) - analyzes the profile of false positives (students who were incorrectly flagged as failing), focusing on how many false positive students have genuine risk factors and the effect of different thresholds on the # and % of false positives in the overall dataset. 
+  - `false_positive_analysis.py` (and .ipynb) - analyzes the profile of false positives (students who were incorrectly flagged as failing), focusing on how many false positive students have genuine risk factors and the effect of different thresholds on the # and % of false positives in the overall dataset. 
   - `feature_calculator.py` - used to select and calculate desired engineered features for EDA and modeling purposes. Functions include _assessment_features_ to calculate engineered features using assessment data and _vle_features_ to calculate engineered features using VLE interation data . 
   - `feature_engineering_EDA.py` - creates engineered features and performs exploratory data analysis on the relationship between these engineered features in the first week of a course and a student's final grade (final_result)
   - `get_course_info.py` - contains code to extract data about courses for EDA purposes using function _course_meta_info_ 
   - `modeler.py` - Python script with all the modeling code, with options to fit specific models (returning diagnostic metrics) and do hyperparameter tuning (returning tuned models). Includes functions _data_preprocess_, _model_initfit_, and _model_tune_.More specific documentation at top of specific functions in script. 
   - `threshold_analysis.py` - contains functions to analyze effect of varying the classification threshold on various performance metrics.
-- `data_handling.png` - image of a flow chart detailing how the OULAD data was merged together into one dataframe, followed by selections of the data and feature calculation. This essentially displays the entire analytical pipeline in as brief a manner as possible
+- `data_handling.png` - image of a flow chart detailing how the OULAD data was merged together into one dataframe, followed by selections of the data and feature calculation. This displays the entire analytical pipeline in as brief a manner as possible
 - `final_models.pkl` - saved output of hyperparameter tuning after calling function _model_tune_ for all candidate models 
 
-We note that there are a few sources for the original OULAD dataset (the UC Irvine ML Repository, Kaggle, and the Open University [OU] Analyse site). These are mostly similar, but have some minor differences. We emphasize that the scripts in this branch are written to work with and have been tested on the version from the OU Analyse site at https://analyse.kmi.open.ac.uk/open-dataset  
+**NB:** We note that there are a few sources for the original OULAD dataset (the UC Irvine ML Repository, Kaggle, and the Open University [OU] Analyse site). These are mostly similar, but have some minor differences. We emphasize that **the scripts in this branch are written to work with and have been tested on the version from the OU Analyse site** at https://analyse.kmi.open.ac.uk/open-dataset  
